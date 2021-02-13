@@ -8,11 +8,7 @@ PlayingState::PlayingState(Game* game)
 	setupEntities();
 
 	_starfield.setStarCount(300);
-	_starfield.populate();
-
-	_view.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
-	_view.setCenter(sf::Vector2f(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f));
-	_view.setViewport(sf::FloatRect(0, 0, 1, 1));
+	_starfield.populate(_game->getWindowHandle(), _player->getPosition());
 }
 
 PlayingState::~PlayingState()
@@ -22,8 +18,6 @@ PlayingState::~PlayingState()
 
 void PlayingState::render(sf::RenderWindow& window)
 {
-	//window.setView(_view);
-
 	_starfield.render(window);
 	_player->render(window);
 }

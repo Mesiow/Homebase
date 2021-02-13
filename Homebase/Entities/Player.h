@@ -1,6 +1,7 @@
 #pragma once
 #include <Game/Math/Math.h>
 #include "Ship.h"
+#include "../Constants.h"
 
 enum class Moving {
 	Forward = 0,
@@ -16,14 +17,16 @@ public:
 	void handleInput(float dt);
 	void handleEvents(sf::Event& ev);
 
+	sf::FloatRect getViewRect()const { return _view.getViewport(); }
+
 private:
 	void setup();
 	void updateVelocity(Moving moving, float dt);
-	void updateRotation(float dt);
+	void updateRotation(sf::RenderWindow &window, float dt);
 	void updateDirection(sf::RenderWindow& window, float dt);
 
 private:
-	bool _rotationLocked;
-	sf::RenderWindow* _w;
 	sf::View _view;
+	float _zoomValue;
+	bool _rotationLocked;
 };

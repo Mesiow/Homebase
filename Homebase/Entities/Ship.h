@@ -8,7 +8,9 @@
 class Ship {
 public:
 	Ship();
+
 	void setPosition(const sf::Vector2f& position);
+	sf::Vector2f getPosition()const { return position; }
 
 protected:
 	void render(sf::RenderTarget& target);

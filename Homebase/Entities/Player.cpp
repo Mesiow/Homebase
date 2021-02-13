@@ -1,5 +1,6 @@
 #include "Player.h"
 #include <Game/ResourceManager/ResourceManager.h>
+#include <iostream>
 
 Player::Player()
 {
@@ -14,13 +15,16 @@ void Player::render(sf::RenderTarget& target)
 
 void Player::update(sf::RenderWindow& window, float dt)
 {
-	_w = &window;
+	//Set window view to the player's view
+	window.setView(_view);
 
 	updateDirection(window, dt);
-	updateRotation(dt);
+	updateRotation(window, dt);
 
 	position += velocity * dt;
 	sprite.setPosition(position);
+
+	_view.setCenter(sprite.getPosition());
 }
 
 void Player::handleInput(float dt)
@@ -49,21 +53,42 @@ void Player::handleEvents(sf::Event& ev)
 				_rotationLocked = false;
 			}
 		}break;
+		case sf::Event::MouseWheelScrolled: {
+			if (ev.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
+				if (ev.mouseWheelScroll.delta == -1) {
+					_zoomValue = 1 + 0.1f;
+				}
+				else {
+					_zoomValue = 1 - 0.1f;
+				}
+				_view.zoom(_zoomValue);
+			}
+		}break;
 	}
 }
 
 void Player::setup()
 {
+	_zoomValue = 1.0f;
 	_rotationLocked = false;
 
-	sprite.setScale(sf::Vector2f(0.2f, 0.2f));
+	sprite.setScale(sf::Vector2f(0.1f, 0.1f));
 	sprite.setOrigin(sf::Vector2f(sprite.getLocalBounds().width / 2.0f, sprite.getLocalBounds().height / 2.0f));
 
-	position = sf::Vector2f(200, 200);
+	position = sf::Vector2f(-1000, 200);
 	sprite.setPosition(position);
 	sprite.setRotation(90);
 	
 	speed = 150.0f;
+
+	/*
+		Player viewport
+	*/
+	_view.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
+	_view.setCenter(sf::Vector2f(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f));
+	_view.setViewport(sf::FloatRect(0, 0, 1, 1));
+
+	std::cout << "View size: " << _view.getSize().x << _view.getSize().y << std::endl;
 }
 
 void Player::updateVelocity(Moving moving, float dt)
@@ -77,15 +102,16 @@ void Player::updateVelocity(Moving moving, float dt)
 	//	velocity.x += (direction.x * speed) * dt;
 }
 
-void Player::updateRotation(float dt)
+void Player::updateRotation(sf::RenderWindow& window, float dt)
 {
 	if (!_rotationLocked) {
-		auto mpos = sf::Mouse::getPosition(*_w);
-		auto diff = (sf::Vector2f)mpos - position;
+		auto mpos = sf::Mouse::getPosition(window);
+		auto worldpos = window.mapPixelToCoords(mpos);
+		auto diff = (sf::Vector2f)worldpos - position;
 
-		angle = (float)atan2(diff.y, diff.x) * 180.0f / M_PI;
-		//angle = angle + 90;
-		sprite.setRotation(angle + 90);
+		angle = (float)(atan2(diff.y, diff.x)) * 180.0f / M_PI;
+		angle = angle + 90;
+		sprite.setRotation(angle);
 	}
 }
 
