@@ -1,4 +1,5 @@
 #include "Starfield.h"
+#include <iostream>
 
 Starfield::Starfield()
 {
@@ -28,9 +29,22 @@ void Starfield::setStarCount(int count)
 void Starfield::populate(sf::RenderWindow& window, const sf::Vector2f& position)
 {
 	Star star;
-	star.star.setFillColor(sf::Color::White);
+	
 
 	for (size_t i = 0; i < _starCount; i++) {
+		float z = thor::random(0.0f, 1.0f);
+		sf::Color color; 
+		if (z >= 0.5f) {
+			color = sf::Color(150, 0, 100, 255);
+		}
+		else if (z <= 0.5f && z >= 0.3f) {
+			color = sf::Color(10, 100, 95, 255);
+		}
+		else if (z <= 0.3f) {
+			color = sf::Color(240, 240, 255, 255);
+		}
+		star.star.setFillColor(color);
+
 		float posX = thor::random(0.0f, (float)SCREEN_WIDTH);
 		float posY = thor::random(0.0f, (float)SCREEN_HEIGHT);
 		float size = thor::random(0.1f, 1.0f);

@@ -7,7 +7,7 @@ PlayingState::PlayingState(Game* game)
 	loadResources();
 	setupEntities();
 
-	_starfield.setStarCount(300);
+	_starfield.setStarCount(500);
 	_starfield.populate(_game->getWindowHandle(), _player->getPosition());
 }
 

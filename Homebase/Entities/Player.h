@@ -25,8 +25,12 @@ private:
 	void updateRotation(sf::RenderWindow &window, float dt);
 	void updateDirection(sf::RenderWindow& window, float dt);
 
+	void thrust(Moving thrust, float dt);
+
 private:
 	sf::View _view;
+
+	float _thrustSpeed;
 	float _zoomValue;
 	bool _rotationLocked;
 };

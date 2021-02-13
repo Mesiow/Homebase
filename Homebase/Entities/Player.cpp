@@ -33,10 +33,10 @@ void Player::handleInput(float dt)
 		updateVelocity(Moving::Forward, dt);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-		updateVelocity(Moving::Left, dt);
+		thrust(Moving::Left, dt);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		updateVelocity(Moving::Right, dt);
+		thrust(Moving::Right, dt);
 	}
 }
 
@@ -69,13 +69,14 @@ void Player::handleEvents(sf::Event& ev)
 
 void Player::setup()
 {
+	_thrustSpeed = 200.0f;
 	_zoomValue = 1.0f;
 	_rotationLocked = false;
 
 	sprite.setScale(sf::Vector2f(0.1f, 0.1f));
 	sprite.setOrigin(sf::Vector2f(sprite.getLocalBounds().width / 2.0f, sprite.getLocalBounds().height / 2.0f));
 
-	position = sf::Vector2f(-1000, 200);
+	position = sf::Vector2f(200, 200);
 	sprite.setPosition(position);
 	sprite.setRotation(90);
 	
@@ -87,8 +88,6 @@ void Player::setup()
 	_view.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
 	_view.setCenter(sf::Vector2f(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f));
 	_view.setViewport(sf::FloatRect(0, 0, 1, 1));
-
-	std::cout << "View size: " << _view.getSize().x << _view.getSize().y << std::endl;
 }
 
 void Player::updateVelocity(Moving moving, float dt)
@@ -109,20 +108,35 @@ void Player::updateRotation(sf::RenderWindow& window, float dt)
 		auto worldpos = window.mapPixelToCoords(mpos);
 		auto diff = (sf::Vector2f)worldpos - position;
 
-		angle = (float)(atan2(diff.y, diff.x)) * 180.0f / M_PI;
+		angle = (atan2(diff.y, diff.x)) * 180.0f / (float)M_PI;
 		angle = angle + 90;
 		sprite.setRotation(angle);
+
+		std::cout << "Angle: " << angle << std::endl;
 	}
 }
 
 void Player::updateDirection(sf::RenderWindow &window, float dt)
 {
-	//sf::Vector2i mpos = sf::Mouse::getPosition(window);
-	//sf::Vector2f dist = distance((sf::Vector2f)mpos, position);
-	///*dist.x = cosf(angle * M_PI / 180);
-	//dist.y = sinf(angle * M_PI / 180);*/
-	//direction = normalize(dist);
 	direction.x = sinf(M_PI * sprite.getRotation() / 180.0f);
 	direction.y = -cos(M_PI * sprite.getRotation() / 180.0f);
 	direction = normalize(direction);
+}
+
+void Player::thrust(Moving thrust, float dt)
+{
+	//Get Cross product of direction vector 
+
+	sf::Vector2f right(direction.y, -direction.x);
+	right = -normalize(right); //inverse because thrusting moves us the opposite direction of the vector
+
+	sf::Vector2f left(-direction.y, direction.x);
+	left = -normalize(left);
+
+	if (thrust == Moving::Left) {
+		velocity -= (left * _thrustSpeed) * dt;
+	}
+	if (thrust == Moving::Right) {
+		velocity -= (right * _thrustSpeed) * dt;
+	}
 }
