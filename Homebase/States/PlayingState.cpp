@@ -4,46 +4,30 @@
 PlayingState::PlayingState(Game* game)
 	:State(game)
 {
-	loadResources();
-	setupEntities();
-
-	_starfield.setStarCount(500);
-	_starfield.populate(_game->getWindowHandle(), _player->getPosition());
+	_mainGame = new MainGame(_game);
 }
 
 PlayingState::~PlayingState()
 {
-	delete _player;
+	delete _mainGame;
 }
 
 void PlayingState::render(sf::RenderWindow& window)
 {
-	_starfield.render(window);
-	_player->render(window);
+	_mainGame->render(window);
 }
 
 void PlayingState::update(float dt)
 {
-	_player->update(_game->getWindowHandle(), dt);
+	_mainGame->update(_game->getWindowHandle(), dt);
 }
 
 void PlayingState::handleInput(float dt)
 {
-	_player->handleInput(dt);
+	_mainGame->handleInput(dt);
 }
 
 void PlayingState::handleEvents(sf::Event& ev, sf::RenderWindow& window)
 {
-	_player->handleEvents(ev);
-}
-
-void PlayingState::loadResources()
-{
-	ResourceManager::loadTexture("Defender", "Res/PlayerShip.png");
-	ResourceManager::loadTexture("Planet1", "Res/Planets/System6.png");
-}
-
-void PlayingState::setupEntities()
-{
-	_player = new Player();
+	_mainGame->handleEvents(ev);
 }

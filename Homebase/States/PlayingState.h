@@ -1,8 +1,8 @@
 #pragma once
 #include <Game/State/State.h>
-#include <Game/ResourceManager/ResourceManager.h>
-#include "../Entities/Player.h"
-#include "../Entities/Starfield.h"
+
+#include "MainGame.h"
+
 
 class PlayingState : public State {
 public:
@@ -15,11 +15,5 @@ public:
 	void handleEvents(sf::Event& ev, sf::RenderWindow& window);
 
 private:
-	void loadResources();
-	void setupEntities();
-
-private:
-	Player* _player;
-	Starfield _starfield;
-	sf::View _view;
+	MainGame* _mainGame;
 };
