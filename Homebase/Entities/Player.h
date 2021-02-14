@@ -17,11 +17,11 @@ public:
 	void handleInput(float dt);
 	void handleEvents(sf::Event& ev);
 
-	sf::FloatRect getViewRect()const { return _view.getViewport(); }
+	const sf::View& getView()const { return _view; }
 
 private:
 	void setup();
-	void updateVelocity(Moving moving, float dt);
+	void updateVelocity(float dt);
 	void updateRotation(sf::RenderWindow &window, float dt);
 	void updateDirection(sf::RenderWindow& window, float dt);
 

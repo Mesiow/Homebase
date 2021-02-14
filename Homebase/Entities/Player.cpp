@@ -30,7 +30,7 @@ void Player::update(sf::RenderWindow& window, float dt)
 void Player::handleInput(float dt)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-		updateVelocity(Moving::Forward, dt);
+		updateVelocity(dt);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
 		thrust(Moving::Left, dt);
@@ -90,15 +90,9 @@ void Player::setup()
 	_view.setViewport(sf::FloatRect(0, 0, 1, 1));
 }
 
-void Player::updateVelocity(Moving moving, float dt)
+void Player::updateVelocity(float dt)
 {
-	if(moving == Moving::Forward)
-		velocity += (direction * speed) * dt;
-
-	//if (moving == Moving::Left)
-	//	velocity.x -= (direction.x * speed) * dt;
-	//else if(moving == Moving::Right)
-	//	velocity.x += (direction.x * speed) * dt;
+	velocity += (direction * speed) * dt;
 }
 
 void Player::updateRotation(sf::RenderWindow& window, float dt)
@@ -111,8 +105,6 @@ void Player::updateRotation(sf::RenderWindow& window, float dt)
 		angle = (atan2(diff.y, diff.x)) * 180.0f / (float)M_PI;
 		angle = angle + 90;
 		sprite.setRotation(angle);
-
-		std::cout << "Angle: " << angle << std::endl;
 	}
 }
 

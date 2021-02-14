@@ -5,7 +5,7 @@
 #include "../Constants.h"
 
 struct Star {
-	sf::CircleShape star;
+	sf::Vertex vert;
 };
 
 class Starfield {
@@ -18,7 +18,7 @@ public:
 	/*
 	   Populate around players location
 	*/
-	void populate(sf::RenderWindow &window, const sf::Vector2f &position);
+	void populate(sf::RenderWindow &window, const sf::View &view);
 
 	bool isInView(sf::RenderWindow &window, const sf::FloatRect& view);
 
@@ -26,6 +26,6 @@ private:
 	void addStar(Star &star);
 
 private:
+	sf::VertexArray _stars;
 	int _starCount;
-	std::vector<Star> _stars;
 };
