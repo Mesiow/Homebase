@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Multiplayer.h"
+#include "Peer.h"
 
 class Game;
 /*
@@ -17,5 +17,8 @@ public:
 	void handleEvents(sf::Event& ev);
 
 private:
-	Multiplayer _multiplayer;
+	void loadResources();
+
+private:
+	Peer _peer;
 };

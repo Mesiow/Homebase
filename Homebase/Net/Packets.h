@@ -17,4 +17,6 @@ enum class eCommandToPeer : Command_t {
 
 enum class ePacket : Packet_t {
 	PeerState = 0, /* Position, Rotation */
+	PeerDied,
+	PeerShot
 };
