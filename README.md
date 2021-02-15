@@ -1,7 +1,6 @@
 # Homebase
-Simple Space RTS game 
+Top Down Multiplayer Space Shooter
 
 # Gameplay 
- - A 1v1 based game where one player is the defender and the other is the attacker
- - The attacker must control all the planets for a certain amount of time to win
- - The defender must make sure he has at least one planet not controlled by the attacker when time runs out to win
+ - A Deathmatch Domination based game where players must capture and hold planets
+ - The player with the highest score from holding planets the longest win
