@@ -33,13 +33,19 @@
     <ClCompile Include="Entities\Planet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="States\MainGame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Net\Multiplayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Net\NetGame.cpp">
+    <ClCompile Include="Net\Peer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\MainGame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Packets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\NetworkedGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,16 +68,19 @@
     <ClInclude Include="Entities\Planet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="States\MainGame.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Net\NetGame.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Net\Multiplayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Net\Packets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\Peer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\MainGame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Net\NetworkedGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

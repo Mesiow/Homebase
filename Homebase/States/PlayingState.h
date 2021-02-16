@@ -1,7 +1,6 @@
 #pragma once
 #include <Game/State/State.h>
-
-#include "MainGame.h"
+#include "../Net/MainGame.h"
 
 
 class PlayingState : public State {
@@ -15,5 +14,5 @@ public:
 	void handleEvents(sf::Event& ev, sf::RenderWindow& window);
 
 private:
-	MainGame* _mainGame;
+	std::unique_ptr<MainGame> _netgame;
 };

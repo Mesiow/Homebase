@@ -151,8 +151,10 @@
     <ClCompile Include="Entities\Starfield.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Net\Multiplayer.cpp" />
-    <ClCompile Include="Net\NetGame.cpp" />
-    <ClCompile Include="States\MainGame.cpp" />
+    <ClCompile Include="Net\MainGame.cpp" />
+    <ClCompile Include="Net\NetworkedGame.cpp" />
+    <ClCompile Include="Net\Packets.cpp" />
+    <ClCompile Include="Net\Peer.cpp" />
     <ClCompile Include="States\PlayingState.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -162,9 +164,10 @@
     <ClInclude Include="Entities\Ship.h" />
     <ClInclude Include="Entities\Starfield.h" />
     <ClInclude Include="Net\Multiplayer.h" />
-    <ClInclude Include="Net\NetGame.h" />
+    <ClInclude Include="Net\MainGame.h" />
+    <ClInclude Include="Net\NetworkedGame.h" />
     <ClInclude Include="Net\Packets.h" />
-    <ClInclude Include="States\MainGame.h" />
+    <ClInclude Include="Net\Peer.h" />
     <ClInclude Include="States\PlayingState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -4,30 +4,30 @@
 PlayingState::PlayingState(Game* game)
 	:State(game)
 {
-	_mainGame = new MainGame(_game);
+	_netgame = std::make_unique<MainGame>(_game);
 }
 
 PlayingState::~PlayingState()
 {
-	delete _mainGame;
+	
 }
 
 void PlayingState::render(sf::RenderWindow& window)
 {
-	_mainGame->render(window);
+	_netgame->render(window);
 }
 
 void PlayingState::update(float dt)
 {
-	_mainGame->update(_game->getWindowHandle(), dt);
+	_netgame->update(_game->getWindowHandle(), dt);
 }
 
 void PlayingState::handleInput(float dt)
 {
-	_mainGame->handleInput(dt);
+	_netgame->handleInput(dt);
 }
 
 void PlayingState::handleEvents(sf::Event& ev, sf::RenderWindow& window)
 {
-	_mainGame->handleEvents(ev);
+	_netgame->handleEvents(ev);
 }
