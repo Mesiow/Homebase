@@ -100,14 +100,31 @@ void Player::updateVelocity(float dt)
 
 void Player::updateRotation(sf::RenderWindow& window, float dt)
 {
+	auto prevmouse = sf::Mouse::getPosition(window);
+	auto prevworld = window.mapPixelToCoords(prevmouse);
+	
+	float prevAngle = sprite.getRotation();
 	if (!_rotationLocked) {
 		auto mpos = sf::Mouse::getPosition(window);
 		auto worldpos = window.mapPixelToCoords(mpos);
 		auto diff = (sf::Vector2f)worldpos - position;
+	
 
 		angle = (atan2(diff.y, diff.x)) * 180.0f / (float)M_PI;
 		angle = angle + 90;
-		sprite.setRotation(angle);
+		
+		//Lerp rotation
+		float difference = abs(angle - prevAngle);
+		if (difference > 180) {
+			if (angle > prevAngle) {
+				prevAngle += 360.0f;
+			}
+			else {
+				angle += 360.0f;
+			}
+		}
+		float newangle = lerp(prevAngle, angle, 0.1f);
+		sprite.setRotation(newangle);
 	}
 }
 
