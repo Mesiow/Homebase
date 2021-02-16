@@ -61,7 +61,10 @@ void Player::handleEvents(sf::Event& ev)
 				else {
 					_zoomValue = 1 - 0.1f;
 				}
-				_view.zoom(_zoomValue);
+				//auto view = _view.getViewport();
+				//sf::FloatRect newView(view.left, view.top, view.width * _zoomValue, view.height * _zoomValue);
+				//_view.setViewport(newView);
+				//_view.zoom(_zoomValue);
 			}
 		}break;
 	}
@@ -110,8 +113,8 @@ void Player::updateRotation(sf::RenderWindow& window, float dt)
 
 void Player::updateDirection(sf::RenderWindow &window, float dt)
 {
-	direction.x = sinf(M_PI * sprite.getRotation() / 180.0f);
-	direction.y = -cos(M_PI * sprite.getRotation() / 180.0f);
+	direction.x = sinf((float)M_PI * sprite.getRotation() / 180.0f);
+	direction.y = -cosf((float)M_PI * sprite.getRotation() / 180.0f);
 	direction = normalize(direction);
 }
 

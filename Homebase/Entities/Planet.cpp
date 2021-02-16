@@ -27,9 +27,9 @@ void Planet::loadTexture(const sf::Texture& texture)
 {
 	_sprite.setTexture(texture);
 	if (_animated) {
-		int frames = 60.0f;
-		int tWidth = texture.getSize().x / 60.0f;
-		int tHeight = texture.getSize().y / 1.0f;
+		int frames = 60;
+		int tWidth = (int)(texture.getSize().x / 60);
+		int tHeight = (int)(texture.getSize().y / 1);
 
 		sf::IntRect rect(0, 0, tWidth, tHeight);
 		_sprite.setTextureRect(rect);
