@@ -1,4 +1,5 @@
 #pragma once
+#include <SFML/Network/Packet.hpp>
 #include <cstdint>
 
 using Peer_t = uint8_t;
@@ -20,3 +21,6 @@ enum class ePacket : Packet_t {
 	PeerDied,
 	PeerShot
 };
+
+sf::Packet& operator<<(sf::Packet& packet, ePacket pack);
+sf::Packet& operator>>(sf::Packet& packet, ePacket& pack);

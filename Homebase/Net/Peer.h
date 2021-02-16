@@ -2,15 +2,21 @@
 #include <Thor/Math.hpp>
 #include "Multiplayer.h"
 
+class Game;
+
 class Peer {
 public:
-	Peer();
+	Peer(Game *game);
 	~Peer();
+	void render(sf::RenderTarget& target);
+	void update(float dt);
+	void handleInput(float dt);
+	void handleEvents(sf::Event& ev);
 
 private:
 	void initSocket();
 
-private:
 	Peer_t _id;
+	Game* _game;
 	Multiplayer _multiplayer;
 };

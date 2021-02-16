@@ -1,27 +1,32 @@
 #pragma once
-#include <Game/Net/Net.h>
-#include "Packets.h"
-#include "../Entities/Player.h"
-#include <memory>
-#include <array>
+#include "NetworkedGame.h"
 
-#define MAX_CONNECTIONS 4
+class Game;
 
 /*
-	Main class responsible for sending and receiving messages and
-	containing multiplayer entities
+	Class responsible for sending and receiving messages/data
 */
 class Multiplayer : public Net{
 public:
 	Multiplayer();
 	~Multiplayer();
+	void run();
+	void render(sf::RenderTarget& target);
+	void update(Game *game, Peer_t id, float dt);
+	void handleInput(Peer_t id, float dt);
+	void handleEvents(Peer_t id, sf::Event& ev);
+
 	void receivePackets()override;
 	void sendPacket(sf::Packet& packet, const EndPoint& endPoint)override;
-	void setSocket(EndPoint& endPoint);
+
+	sf::Socket::Status bindSocket(EndPoint& endPoint);
+
+	NetworkedGame& game() { return _game; }
+	void handleUserAdded(Peer_t id);
 
 private:
+	void handleReceivedPeerState(sf::Packet& packet);
 	void setup();
 
-private:
-	std::array<std::unique_ptr<Player>, MAX_CONNECTIONS> _players;
+	NetworkedGame _game;
 };
