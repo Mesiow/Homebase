@@ -8,11 +8,11 @@ class Game;
 */
 class Multiplayer : public Net{
 public:
-	Multiplayer();
+	Multiplayer(Game *game);
 	~Multiplayer();
 	void run();
 	void render(sf::RenderTarget& target);
-	void update(Game *game, Peer_t id, float dt);
+	void update(Peer_t id, float dt);
 	void handleInput(Peer_t id, float dt);
 	void handleEvents(Peer_t id, sf::Event& ev);
 

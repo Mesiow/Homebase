@@ -2,7 +2,7 @@
 #include <iostream>
 
 Peer::Peer(Game *game)
-	:_game(game)
+	:_game(game), _multiplayer(game)
 {
 	_id = 0;
 	initSocket();
@@ -20,7 +20,7 @@ void Peer::render(sf::RenderTarget& target)
 
 void Peer::update(float dt)
 {
-	_multiplayer.update(_game, _id, dt);
+	_multiplayer.update(_id, dt);
 }
 
 void Peer::handleInput(float dt)

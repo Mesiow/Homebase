@@ -2,9 +2,10 @@
 #include <Game/Game.h>
 #include <iostream>
 
-Multiplayer::Multiplayer()
+Multiplayer::Multiplayer(Game *game)
 {
-	setup();
+	_game.setup();
+	_game.game = game;
 }
 
 Multiplayer::~Multiplayer()
@@ -22,9 +23,9 @@ void Multiplayer::render(sf::RenderTarget& target)
 	_game.render(target);
 }
 
-void Multiplayer::update(Game *game, Peer_t id, float dt)
+void Multiplayer::update(Peer_t id, float dt)
 {
-	_game.players[id]->update(game->getWindowHandle(), dt);
+	_game.update(id, dt);
 }
 
 void Multiplayer::handleInput(Peer_t id, float dt)
@@ -81,5 +82,5 @@ void Multiplayer::handleUserAdded(Peer_t id)
 
 void Multiplayer::setup()
 {
-	_game.zero();
+	
 }

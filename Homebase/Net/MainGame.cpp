@@ -42,4 +42,6 @@ void MainGame::loadResources()
 {
 	ResourceManager::loadTexture("Defender", "Res/PlayerShip.png");
 	ResourceManager::loadTexture("Moon1", "Res/Planets/moon_sheet.png");
+	ResourceManager::loadTexture("Terran_Cloudy", "Res/Planets/Terran_Sheet.png");
+	ResourceManager::loadTexture("Gas_Giant_Red", "Res/Planets/Gas_Giant_Sheet.png");
 }
