@@ -48,8 +48,8 @@ void Starfield::populate(sf::RenderWindow& window, const sf::View &view)
 		float left = 0 - view.getCenter().x;
 		float top = 0 - view.getCenter().y;
 
-		float posX = thor::random(left, (float)SCREEN_WIDTH);
-		float posY = thor::random(top, (float)SCREEN_HEIGHT);
+		float posX = thor::random(left - 600, (float)SCREEN_WIDTH + 600);
+		float posY = thor::random(top - 600, (float)SCREEN_HEIGHT + 600);
 		float size = thor::random(0.1f, 1.0f);
 		sf::Vector2f position(posX, posY);
 

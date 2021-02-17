@@ -61,10 +61,15 @@ void Player::handleEvents(sf::Event& ev)
 				else {
 					_zoomValue = 1 - 0.1f;
 				}
-				//auto view = _view.getViewport();
-				//sf::FloatRect newView(view.left, view.top, view.width * _zoomValue, view.height * _zoomValue);
-				//_view.setViewport(newView);
-				//_view.zoom(_zoomValue);
+				//Lerp the view
+				auto prevView = _view.getSize();
+				auto targetView = _view.getSize() * _zoomValue;
+				
+				float vx = lerp(prevView.x, targetView.x, 0.05f);
+				float vy = lerp(prevView.y, targetView.y, 0.05f);
+
+				sf::Vector2f lerpedView = sf::Vector2f(vx, vy);
+				_view.setSize(lerpedView);
 			}
 		}break;
 	}
@@ -123,7 +128,7 @@ void Player::updateRotation(sf::RenderWindow& window, float dt)
 				angle += 360.0f;
 			}
 		}
-		float newangle = lerp(prevAngle, angle, 0.1f);
+		float newangle = lerp(prevAngle, angle, 5.0f * dt);
 		sprite.setRotation(newangle);
 	}
 }
