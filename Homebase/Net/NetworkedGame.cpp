@@ -21,7 +21,7 @@ void NetworkedGame::update(Peer_t id, float dt)
 
 void NetworkedGame::shoot(const PlayerData& data)
 {
-	//players[data.id]->shoot(x, y, dx, dy);
+	players[data.id]->shoot(data.x, data.y, data.dx, data.dy);
 }
 
 void NetworkedGame::setupPlanetLocations()

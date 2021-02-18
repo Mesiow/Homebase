@@ -145,6 +145,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Entities\Animation.cpp" />
+    <ClCompile Include="Entities\Bullet.cpp" />
     <ClCompile Include="Entities\Planet.cpp" />
     <ClCompile Include="Entities\Player.cpp" />
     <ClCompile Include="Entities\Ship.cpp" />
@@ -159,6 +161,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="Entities\Animation.h" />
+    <ClInclude Include="Entities\Bullet.h" />
     <ClInclude Include="Entities\Planet.h" />
     <ClInclude Include="Entities\Player.h" />
     <ClInclude Include="Entities\Ship.h" />
