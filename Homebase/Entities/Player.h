@@ -1,5 +1,6 @@
 #pragma once
 #include <Game/Math/Math.h>
+#include "Bullet.h"
 #include "Ship.h"
 #include "../Constants.h"
 
@@ -16,8 +17,9 @@ public:
 	void update(sf::RenderWindow& window, float dt);
 	void handleInput(float dt);
 	void handleEvents(sf::Event& ev);
-
 	const sf::View& getView()const { return _view; }
+
+	void shoot(float x, float y, float dx, float dy);
 
 private:
 	void setup();
@@ -28,6 +30,7 @@ private:
 	void thrust(Moving thrust, float dt);
 
 private:
+	std::vector<Bullet> _bullets;
 	sf::View _view;
 
 	float _thrustSpeed;

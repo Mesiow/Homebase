@@ -10,6 +10,8 @@ Player::Player()
 
 void Player::render(sf::RenderTarget& target)
 {
+	for (auto& b : _bullets) b.render(target);
+
 	Ship::render(target);
 }
 
@@ -23,6 +25,8 @@ void Player::update(sf::RenderWindow& window, float dt)
 
 	position += velocity * dt;
 	sprite.setPosition(position);
+
+	for (auto& b : _bullets) b.update(dt);
 
 	_view.setCenter(sprite.getPosition());
 }
@@ -53,6 +57,11 @@ void Player::handleEvents(sf::Event& ev)
 				_rotationLocked = false;
 			}
 		}break;
+		case sf::Event::MouseButtonPressed: {
+			if (ev.mouseButton.button == sf::Mouse::Left) {
+				shoot(position.x, position.y, direction.x, direction.y);
+			}
+		}break;
 		case sf::Event::MouseWheelScrolled: {
 			if (ev.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
 				if (ev.mouseWheelScroll.delta == -1) {
@@ -65,8 +74,8 @@ void Player::handleEvents(sf::Event& ev)
 				auto prevView = _view.getSize();
 				auto targetView = _view.getSize() * _zoomValue;
 				
-				float vx = lerp(prevView.x, targetView.x, 0.05f);
-				float vy = lerp(prevView.y, targetView.y, 0.05f);
+				float vx = lerp(prevView.x, targetView.x, 0.08f);
+				float vy = lerp(prevView.y, targetView.y, 0.08f);
 
 				sf::Vector2f lerpedView = sf::Vector2f(vx, vy);
 				_view.setSize(lerpedView);
@@ -75,8 +84,16 @@ void Player::handleEvents(sf::Event& ev)
 	}
 }
 
+void Player::shoot(float x, float y, float dx, float dy)
+{
+	Bullet bullet(x, y, dx, dy);
+	_bullets.emplace_back(bullet);
+}
+
 void Player::setup()
 {
+	_bullets.clear();
+
 	_thrustSpeed = 200.0f;
 	_zoomValue = 1.0f;
 	_rotationLocked = false;
