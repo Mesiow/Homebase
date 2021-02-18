@@ -55,6 +55,5 @@ private:
 	thor::Animator<sf::Sprite, std::string> _animator;
 	thor::FrameAnimation _animation;
 	sf::Clock _animClock;
-	float _animProgress = 0.0f;
 	bool _animated;
 };

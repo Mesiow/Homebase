@@ -52,11 +52,11 @@ void Planet::loadTexture(const sf::Texture& texture)
 		switch (_type) {
 			case Planet::Type::Planet: {
 				_sprite.setScale(4.0f, 4.0f); 
-				_outline.setRadius(tWidth * 3.5f);
+				_outline.setRadius(tWidth * 4.0f);
 			}break;
 			case Planet::Type::Moon: { 
 				_sprite.setScale(2.5f, 2.5f); 
-				_outline.setRadius(tWidth * 2.0f);
+				_outline.setRadius(tWidth * 2.5f);
 			} break;
 		}
 		_sprite.setOrigin(sf::Vector2f(_sprite.getLocalBounds().width / 2.0f, _sprite.getLocalBounds().height / 2.0f));
