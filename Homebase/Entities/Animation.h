@@ -12,6 +12,7 @@ struct Animation {
 	bool isDone();
 
 
+	int nFrames;
 	int frameWidth;
 	int frameHeight;
 	thor::Animator<sf::Sprite, std::string> animator;

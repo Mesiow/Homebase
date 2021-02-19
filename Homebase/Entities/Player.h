@@ -20,6 +20,7 @@ public:
 	const sf::View& getView()const { return _view; }
 
 	void shoot(float x, float y, float dx, float dy);
+	void updateBullets(float dt);
 
 private:
 	void setup();

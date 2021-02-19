@@ -14,5 +14,5 @@ public:
 	void handleEvents(sf::Event& ev, sf::RenderWindow& window);
 
 private:
-	std::unique_ptr<MainGame> _netgame;
+	std::unique_ptr<MainGame> _mgame;
 };

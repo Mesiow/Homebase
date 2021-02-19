@@ -8,6 +8,7 @@ void Animation::setAnimationSheet(const sf::Texture& texture)
 	int tWidth = (int)(texture.getSize().x / nFramesRow); //width of one frame in a row
 	int tHeight = (int)(texture.getSize().y / nFramesColumn); //width of one frame in a column
 
+	nFrames = nFramesRow * nFramesColumn;
 	frameWidth = tWidth;
 	frameHeight = tHeight;
 

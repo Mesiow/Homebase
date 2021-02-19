@@ -1,6 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <Thor/Animations.hpp>
+#include "Animation.h"
 
 
 
@@ -52,8 +52,6 @@ private:
 	Planet::Status _status;
 	bool _renderOutline;
 
-	thor::Animator<sf::Sprite, std::string> _animator;
-	thor::FrameAnimation _animation;
-	sf::Clock _animClock;
+	Animation _animation;
 	bool _animated;
 };

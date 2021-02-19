@@ -4,7 +4,7 @@
 PlayingState::PlayingState(Game* game)
 	:State(game)
 {
-	_netgame = std::make_unique<MainGame>(_game);
+	_mgame = std::make_unique<MainGame>(_game);
 }
 
 PlayingState::~PlayingState()
@@ -14,20 +14,20 @@ PlayingState::~PlayingState()
 
 void PlayingState::render(sf::RenderWindow& window)
 {
-	_netgame->render(window);
+	_mgame->render(window);
 }
 
 void PlayingState::update(float dt)
 {
-	_netgame->update(_game->getWindowHandle(), dt);
+	_mgame->update(State::_game->getWindowHandle(), dt);
 }
 
 void PlayingState::handleInput(float dt)
 {
-	_netgame->handleInput(dt);
+	_mgame->handleInput(dt);
 }
 
 void PlayingState::handleEvents(sf::Event& ev, sf::RenderWindow& window)
 {
-	_netgame->handleEvents(ev);
+	_mgame->handleEvents(ev);
 }

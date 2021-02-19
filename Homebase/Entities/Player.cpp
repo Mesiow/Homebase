@@ -26,7 +26,7 @@ void Player::update(sf::RenderWindow& window, float dt)
 	position += velocity * dt;
 	sprite.setPosition(position);
 
-	for (auto& b : _bullets) b.update(dt);
+	updateBullets(dt);
 
 	_view.setCenter(sprite.getPosition());
 }
@@ -90,6 +90,11 @@ void Player::shoot(float x, float y, float dx, float dy)
 	_bullets.emplace_back(bullet);
 }
 
+void Player::updateBullets(float dt)
+{
+	for (auto& b : _bullets) b.update(dt);
+}
+
 void Player::setup()
 {
 	_bullets.clear();
@@ -105,7 +110,7 @@ void Player::setup()
 	sprite.setPosition(position);
 	sprite.setRotation(90);
 	
-	speed = 150.0f;
+	speed = 125.0f;
 
 	/*
 		Player viewport

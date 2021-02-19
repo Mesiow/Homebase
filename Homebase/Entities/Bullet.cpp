@@ -5,7 +5,7 @@ Bullet::Bullet(float x, float y, float dx, float dy)
 {
 	_position = sf::Vector2f(x, y);
 	_direction = sf::Vector2f(dx, dy);
-	_speed = 350.0f;
+	_speed = 390.0f;
 	loadTexture();
 
 	/* Constant velocity */

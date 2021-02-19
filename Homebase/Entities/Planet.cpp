@@ -28,8 +28,7 @@ void Planet::update(sf::RenderWindow &window, float dt)
 	}
 
 	if (_animated) {
-		_animator.update(_animClock.restart());
-		_animator.animate(_sprite);
+		_animation.update(_sprite);
 	}
 
 }
@@ -38,38 +37,30 @@ void Planet::loadTexture(const sf::Texture& texture)
 {
 	_sprite.setTexture(texture);
 	if (_animated) {
-		int nFrames = (int)(texture.getSize().x) / (int)(texture.getSize().y); 
+		_animation.setAnimationSheet(texture);
 
-		int tWidth = (int)(texture.getSize().x / nFrames); //width of one frame
-		int tHeight = (int)(texture.getSize().y / 1);
-
-		sf::IntRect rect(0, 0, tWidth, tHeight);
+		sf::IntRect rect(0, 0, _animation.frameWidth, _animation.frameHeight);
 		_sprite.setTextureRect(rect);
 
-		float rotationTime = nFrames / 6.0f;
+		float rotationTime = _animation.nFrames / 6.0f;
 
 		//Setup planet
 		switch (_type) {
 			case Planet::Type::Planet: {
 				_sprite.setScale(4.0f, 4.0f); 
-				_outline.setRadius(tWidth * 4.0f);
+				_outline.setRadius(_animation.frameWidth * 4.0f);
 			}break;
 			case Planet::Type::Moon: { 
 				_sprite.setScale(2.5f, 2.5f); 
-				_outline.setRadius(tWidth * 2.5f);
+				_outline.setRadius(_animation.frameWidth * 2.5f);
 			} break;
 		}
 		_sprite.setOrigin(sf::Vector2f(_sprite.getLocalBounds().width / 2.0f, _sprite.getLocalBounds().height / 2.0f));
 		_outline.attach(*this);
 		updateStatus(_status);
 
-
-		for (int i = 0; i < nFrames; i++) {
-			sf::IntRect newRect(i * tWidth, 0, tWidth, tHeight);
-			_animation.addFrame(0.5f, newRect);
-		}
-		_animator.addAnimation("spin", _animation, sf::seconds(rotationTime));
-		_animator.playAnimation("spin", true);
+		_animation.add("spin", sf::seconds(rotationTime));
+		_animation.play("spin", true);
 	}
 }
 
