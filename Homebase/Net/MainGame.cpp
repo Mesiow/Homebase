@@ -5,7 +5,7 @@
 MainGame::MainGame(Game* game)
 {
 	loadResources();
-	_peer = std::make_unique<Peer>(game);
+	_peer = std::make_unique<Peer>(game, true);
 
 	_starfield.setStarCount(1500);
 	_starfield.populate(game->getWindowHandle(), sf::View());

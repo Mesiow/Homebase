@@ -6,7 +6,7 @@ class Game;
 
 class Peer {
 public:
-	Peer(Game *game);
+	Peer(Game *game, bool host = false);
 	~Peer();
 	void render(sf::RenderTarget& target);
 	void update(float dt);

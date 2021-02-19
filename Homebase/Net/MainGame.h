@@ -22,7 +22,4 @@ private:
 
 	std::unique_ptr<Peer> _peer;
 	Starfield _starfield;
-	//
-	//	int _systemSize;
-	//	std::vector<Planet> _planets;
 };

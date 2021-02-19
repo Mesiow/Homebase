@@ -1,8 +1,8 @@
 #include "Peer.h"
 #include <iostream>
 
-Peer::Peer(Game *game)
-	:_game(game), _multiplayer(game)
+Peer::Peer(Game *game, bool host)
+	:_game(game), _multiplayer(game, host)
 {
 	_id = 0;
 	initSocket();
@@ -45,10 +45,17 @@ void Peer::initSocket()
 		std::cout << "Socket bound to "
 			<< ep.address.toString() << ":"
 			<< ep.port << std::endl;
-		/*
-			Add our user locally
-		*/
-		_multiplayer.handleUserAdded(_id);
+
+		if (_multiplayer.isHost()) {
+			_id = 0;
+			/*
+				Add our user locally
+			*/
+			_multiplayer.handleUserAdded(_id, ep);
+		}
+		else {
+			_multiplayer.sendBroadcastLAN()
+		}
 	}
 	else if (status == sf::Socket::Error) {
 		std::cerr << "Socket failed to bind\n";

@@ -8,7 +8,8 @@ using Command_t = uint8_t;
 
 enum class eCommandToHost : Command_t {
 	ConnectRequest = 0,
-	DisconnectRequest
+	DisconnectRequest,
+	Broadcast
 };
 
 enum class eCommandToPeer : Command_t {
@@ -24,3 +25,5 @@ enum class ePacket : Packet_t {
 
 sf::Packet& operator<<(sf::Packet& packet, ePacket pack);
 sf::Packet& operator>>(sf::Packet& packet, ePacket& pack);
+sf::Packet& operator<<(sf::Packet& packet, eCommandToHost command);
+sf::Packet& operator>>(sf::Packet& packet, eCommandToHost& command);

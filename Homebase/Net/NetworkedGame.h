@@ -27,6 +27,8 @@ struct NetworkedGame {
 
 	void render(sf::RenderTarget& target);
 	void update(Peer_t id, float dt);
+	void handleInput(Peer_t id, float dt);
+	void handleEvents(Peer_t id, sf::Event& ev);
 
 	/*
 	  Shoot from a networked player's location using its' data
@@ -37,7 +39,7 @@ struct NetworkedGame {
 	/*
 	  Add new player to the players list
 	*/
-	void add(Peer_t id);
+	void add(Peer_t id, const EndPoint &endPoint);
 
 	Player& getPlayerById(Peer_t id);
 
@@ -53,6 +55,7 @@ struct NetworkedGame {
 
 	std::array<std::unique_ptr<EndPoint>, MAX_CONNECTIONS> peers;
 	std::array<std::unique_ptr<Player>, MAX_CONNECTIONS> players;
+	std::array<bool, MAX_CONNECTIONS> connects;
 	std::vector<Planet> planets;
 
 	Game* game;

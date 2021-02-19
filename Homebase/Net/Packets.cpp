@@ -13,3 +13,17 @@ sf::Packet& operator>>(sf::Packet& packet, ePacket& pack)
     pack = (ePacket)p;
     return packet;
 }
+
+sf::Packet& operator<<(sf::Packet& packet, eCommandToHost command)
+{
+    packet << (Command_t)command;
+    return packet;
+}
+
+sf::Packet& operator>>(sf::Packet& packet, eCommandToHost& command)
+{
+    Command_t c = (Command_t)command;
+    packet >> c;
+    command = (eCommandToHost)c;
+    return packet;
+}
