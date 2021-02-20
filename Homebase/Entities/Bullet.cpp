@@ -23,6 +23,12 @@ void Bullet::update(float dt)
 	_sprite.setPosition(_position);
 }
 
+bool Bullet::outOfBounds()const
+{
+	return ((_position.x < -ARENA_WIDTH || _position.x > ARENA_WIDTH)
+		|| (_position.y < -ARENA_HEIGHT || _position.y > ARENA_HEIGHT));
+}
+
 void Bullet::loadTexture()
 {
 	auto &texture = ResourceManager::getTexture("Laser");

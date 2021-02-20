@@ -1,9 +1,11 @@
 #include "Player.h"
 #include <Game/ResourceManager/ResourceManager.h>
+#include <Game/Game.h>
 #include <iostream>
 
-Player::Player()
+Player::Player(Game *game)
 {
+	_windowRef = &game->getWindowHandle();
 	loadTexture(ResourceManager::getTexture("Defender"));
 	setup();
 }
@@ -93,6 +95,14 @@ void Player::shoot(float x, float y, float dx, float dy)
 void Player::updateBullets(float dt)
 {
 	for (auto& b : _bullets) b.update(dt);
+
+	if (!_bullets.empty()) {
+		_bullets.erase(std::remove_if(
+			_bullets.begin(), _bullets.end(),
+			[&](const Bullet& b) { return b.outOfBounds(); }
+		), _bullets.end());
+		std::cout << "Bullets size: " << _bullets.size() << std::endl;
+	}
 }
 
 void Player::setup()

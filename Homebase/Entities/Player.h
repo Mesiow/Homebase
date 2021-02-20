@@ -4,6 +4,8 @@
 #include "Ship.h"
 #include "../Constants.h"
 
+class Game;
+
 enum class Moving {
 	Forward = 0,
 	Left,
@@ -12,7 +14,7 @@ enum class Moving {
 
 class Player : public Ship {
 public:
-	Player();
+	Player(Game *game);
 	void render(sf::RenderTarget& target);
 	void update(sf::RenderWindow& window, float dt);
 	void handleInput(float dt);
@@ -37,4 +39,6 @@ private:
 	float _thrustSpeed;
 	float _zoomValue;
 	bool _rotationLocked;
+
+	sf::RenderWindow* _windowRef;
 };
