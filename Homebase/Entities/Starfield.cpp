@@ -6,14 +6,17 @@ Starfield::Starfield()
 	_starCount = 250;
 	_stars.clear();
 	_stars.resize(_starCount);
+	initBorder();
 }
 
 Starfield::~Starfield()
 {
+
 }
 
 void Starfield::render(sf::RenderTarget& target)
 {
+	target.draw(_border);
 	target.draw(_stars);	
 }
 
@@ -28,7 +31,7 @@ void Starfield::setStarCount(int count)
 	_stars.resize(count);
 }
 
-void Starfield::populate(sf::RenderWindow& window, const sf::View &view)
+void Starfield::populate()
 {
 	Star star;
 	for (size_t i = 0; i < _starCount; i++) {
@@ -45,11 +48,13 @@ void Starfield::populate(sf::RenderWindow& window, const sf::View &view)
 		}
 		star.vert.color = color;
 
-		float left = 0 - view.getCenter().x;
-		float top = 0 - view.getCenter().y;
+		float left = -ARENA_WIDTH;
+		float top = -ARENA_HEIGHT;
+		float right = ARENA_WIDTH;
+		float bottom = ARENA_HEIGHT;
 
-		float posX = thor::random(left - 600, (float)SCREEN_WIDTH + 600);
-		float posY = thor::random(top - 600, (float)SCREEN_HEIGHT + 600);
+		float posX = thor::random(left, right);
+		float posY = thor::random(top, bottom);
 		float size = thor::random(0.1f, 1.0f);
 		sf::Vector2f position(posX, posY);
 
@@ -83,18 +88,17 @@ void Starfield::populate(sf::RenderWindow& window, const sf::View &view)
 			star.vert.position.y += 1;
 			addStar(star);
 		}
-
-		
-		
 	}
 }
 
-bool Starfield::isInView(sf::RenderWindow& window, const sf::FloatRect& view)
+void Starfield::initBorder()
 {
-	for (size_t i = 0; i < _starCount; ++i) {
-		
-	}
-	return false;
+	_border.setFillColor(sf::Color::Transparent);
+	_border.setSize(sf::Vector2f(ARENA_WIDTH + ARENA_WIDTH, ARENA_HEIGHT + ARENA_HEIGHT));
+	_border.setOrigin(sf::Vector2f(_border.getLocalBounds().width / 2.0f, _border.getLocalBounds().height / 2.0f));
+	_border.setPosition(0, 0);
+	_border.setOutlineThickness(1.0f);
+	_border.setOutlineColor(sf::Color::Red);
 }
 
 void Starfield::addStar(Star &star)

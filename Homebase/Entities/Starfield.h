@@ -1,7 +1,6 @@
 #pragma once
 #include <Thor/Math.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics.hpp>
 #include "../Constants.h"
 
 struct Star {
@@ -16,16 +15,17 @@ public:
 	void update();
 	void setStarCount(int count);
 	/*
-	   Populate around players location
+	   Populate the arena with stars
 	*/
-	void populate(sf::RenderWindow &window, const sf::View &view);
-
-	bool isInView(sf::RenderWindow &window, const sf::FloatRect& view);
+	void populate();
 
 private:
+	void initBorder();
 	void addStar(Star &star);
 
 private:
 	sf::VertexArray _stars;
 	int _starCount;
+
+	sf::RectangleShape _border;
 };
