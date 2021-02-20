@@ -6,6 +6,8 @@ using Peer_t = uint8_t;
 using Packet_t = uint8_t;
 using Command_t = uint8_t;
 
+const int commandSizeInBytes = 2; /* bool(to tell us if command) + command itself */
+
 enum class eCommandToHost : Command_t {
 	ConnectRequest = 0,
 	DisconnectRequest,
@@ -14,7 +16,8 @@ enum class eCommandToHost : Command_t {
 
 enum class eCommandToPeer : Command_t {
 	ConnectResponse = 0,
-	DisconnectResponse
+	DisconnectResponse,
+	BroadcastResponse
 };
 
 enum class ePacket : Packet_t {
@@ -27,3 +30,5 @@ sf::Packet& operator<<(sf::Packet& packet, ePacket pack);
 sf::Packet& operator>>(sf::Packet& packet, ePacket& pack);
 sf::Packet& operator<<(sf::Packet& packet, eCommandToHost command);
 sf::Packet& operator>>(sf::Packet& packet, eCommandToHost& command);
+sf::Packet& operator<<(sf::Packet& packet, eCommandToPeer command);
+sf::Packet& operator>>(sf::Packet& packet, eCommandToPeer& command);

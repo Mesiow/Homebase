@@ -36,12 +36,22 @@ void Peer::handleEvents(sf::Event& ev)
 void Peer::initSocket()
 {
 	EndPoint ep;
-	ep.address = sf::IpAddress::LocalHost;
-	uint16_t port = thor::random(1024, 49151);
-	ep.port = port;
+	ep.address = sf::IpAddress::getLocalAddress();
+	if (!_multiplayer.isHost()) {
+		uint16_t port = thor::random(1024, 44151);
+		ep.port = port;
+	}
+	else {
+		ep.port = _multiplayer.hostPort;
+	}
 
 	sf::Socket::Status status = _multiplayer.bindSocket(ep);
 	if (status == sf::Socket::Done) {
+		/*
+			Start listening thread to listen to incoming packets
+		*/
+		_multiplayer.listen();
+
 		std::cout << "Socket bound to "
 			<< ep.address.toString() << ":"
 			<< ep.port << std::endl;
@@ -54,7 +64,7 @@ void Peer::initSocket()
 			_multiplayer.handleUserAdded(_id, ep);
 		}
 		else {
-			_multiplayer.sendBroadcastLAN()
+			_multiplayer.sendBroadcastLAN(_multiplayer.hostPort);
 		}
 	}
 	else if (status == sf::Socket::Error) {

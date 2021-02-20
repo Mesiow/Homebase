@@ -10,11 +10,13 @@ Multiplayer::Multiplayer(Game *game, bool host)
 	if (host) {
 		_host = std::make_unique<Host>();
 	}
+	_listeningThread = std::make_unique<sf::Thread>(&Multiplayer::receivePackets, this);
 }
 
 Multiplayer::~Multiplayer()
 {
 	socket.unbind();
+	_listeningThread->terminate();
 }
 
 void Multiplayer::render(sf::RenderTarget& target)
@@ -24,8 +26,6 @@ void Multiplayer::render(sf::RenderTarget& target)
 
 void Multiplayer::update(Peer_t id, float dt)
 {
-	receivePackets();
-
 	_game.update(id, dt);
 }
 
@@ -39,19 +39,52 @@ void Multiplayer::handleEvents(Peer_t id, sf::Event& ev)
 	_game.handleEvents(id, ev);
 }
 
+void Multiplayer::listen()
+{
+	_listening = true;
+	_listeningThread->launch();
+}
+
 void Multiplayer::receivePackets()
 {
-	sf::Packet packet;
-	sf::IpAddress remoteAddress;
-	uint16_t remotePort;
-	if (socket.receive(packet, remoteAddress, remotePort) == sf::Socket::Done) {
-		ePacket id;
-		packet >> id;
+	while (_listening) {
+		sf::Packet packet;
+		sf::IpAddress remoteAddress;
+		uint16_t remotePort;
+		if (socket.receive(packet, remoteAddress, remotePort) == sf::Socket::Done) {
+			bool isCommand = false;
+			if (packet.getDataSize() == commandSizeInBytes) {
+				packet >> isCommand;
+			}
 
-		switch (id) {
-			case ePacket::PeerState: handleReceivedPeerState(packet); break;
-			case ePacket::PeerShot: break;
-			case ePacket::PeerDied:  break;
+			/*
+				If we are the host check if we have received a specific packet intented for just the host
+			*/
+
+			if (_host) {
+				if (isCommand) { //Check for command packets for the host
+					eCommandToHost id;
+					packet >> id;
+					switch (id) {
+					case eCommandToHost::Broadcast: handleReceivedBroadcast({ remoteAddress, remotePort }); break;
+					}
+				}
+				else { //Check for regular state data packets
+					handleReceivedStateData(packet);
+				}
+			}
+			else {
+				if (isCommand) { //Command data for the peer
+					eCommandToPeer id;
+					packet >> id;
+					switch (id) {
+					case eCommandToPeer::BroadcastResponse: handleBroadcastResponse({ remoteAddress, remotePort }); break;
+					}
+				}
+				else { //Check for regular state data packets
+					handleReceivedStateData(packet);
+				}
+			}
 		}
 	}
 }
@@ -64,7 +97,8 @@ void Multiplayer::sendPacket(sf::Packet& packet, const EndPoint& endPoint)
 void Multiplayer::sendBroadcastLAN(uint16_t portToSendBroadcast)
 {
 	sf::Packet broadcastPacket;
-	broadcastPacket << eCommandToHost::Broadcast;
+	bool isCommand = true;
+	broadcastPacket << isCommand << eCommandToHost::Broadcast;
 	socket.send(broadcastPacket, sf::IpAddress::Broadcast, portToSendBroadcast);
 }
 
@@ -87,9 +121,34 @@ bool Multiplayer::isHost() const
 	return (_host != nullptr);
 }
 
+void Multiplayer::handleReceivedStateData(sf::Packet& packet)
+{
+	ePacket id;
+	packet >> id;
+	switch (id) {
+		case ePacket::PeerState: handleReceivedPeerState(packet); break;
+		case ePacket::PeerShot: break;
+		case ePacket::PeerDied:  break;
+	}
+}
+
 void Multiplayer::handleReceivedPeerState(sf::Packet& packet)
 {
 
+}
+
+void Multiplayer::handleReceivedBroadcast(const EndPoint& endPoint)
+{
+	std::cout << "Broadcast received from: " << endPoint.address << ":" << endPoint.port << std::endl;
+	sf::Packet broadcastResponse;
+	bool isCommand = true;
+	broadcastResponse << isCommand << eCommandToPeer::BroadcastResponse;
+	sendPacket(broadcastResponse, endPoint);
+}
+
+void Multiplayer::handleBroadcastResponse(const EndPoint& endPoint)
+{
+	std::cout<<"Broadcast response from: " << endPoint.address << ":" << endPoint.port << std::endl;
 }
 
 void Multiplayer::handleUserAdded(Peer_t id, const EndPoint &endPoint)

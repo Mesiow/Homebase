@@ -27,3 +27,17 @@ sf::Packet& operator>>(sf::Packet& packet, eCommandToHost& command)
     command = (eCommandToHost)c;
     return packet;
 }
+
+sf::Packet& operator<<(sf::Packet& packet, eCommandToPeer command)
+{
+    packet << (Command_t)command;
+    return packet;
+}
+
+sf::Packet& operator>>(sf::Packet& packet, eCommandToPeer& command)
+{
+    Command_t c = (Command_t)command;
+    packet >> c;
+    command = (eCommandToPeer)c;
+    return packet;
+}

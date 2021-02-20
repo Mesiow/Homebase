@@ -59,7 +59,7 @@ void NetworkedGame::add(Peer_t id, const EndPoint &endPoint)
 {
 	connects[id] = true;
 	peers[id] = std::make_unique<EndPoint>(endPoint);
-	players[id] = std::make_unique<Player>();
+	players[id] = std::make_unique<Player>(game);
 }
 
 Player& NetworkedGame::getPlayerById(Peer_t id)
