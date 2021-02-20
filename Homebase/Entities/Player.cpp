@@ -101,7 +101,6 @@ void Player::updateBullets(float dt)
 			_bullets.begin(), _bullets.end(),
 			[&](const Bullet& b) { return b.outOfBounds(); }
 		), _bullets.end());
-		std::cout << "Bullets size: " << _bullets.size() << std::endl;
 	}
 }
 
