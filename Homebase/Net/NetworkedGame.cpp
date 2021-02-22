@@ -62,6 +62,14 @@ void NetworkedGame::add(Peer_t id, const EndPoint &endPoint)
 	players[id] = std::make_unique<Player>(game);
 }
 
+int NetworkedGame::getFreeSlot() const
+{
+	for (int i = 0; i < MAX_CONNECTIONS; ++i) {
+		if (!connects[i]) return i;
+	}
+	return -1;
+}
+
 Player& NetworkedGame::getPlayerById(Peer_t id)
 {
 	return *players[id];

@@ -15,7 +15,7 @@ MainGame::MainGame(Game* game)
 	else
 		_peer = std::make_unique<Peer>(game);
 
-	_starfield.setStarCount(15000);
+	_starfield.setStarCount(10000);
 	_starfield.populate();
 }
 
@@ -27,7 +27,6 @@ MainGame::~MainGame()
 void MainGame::render(sf::RenderTarget& target)
 {
 	_starfield.render(target);
-
 	_peer->render(target);
 }
 

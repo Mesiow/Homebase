@@ -40,6 +40,7 @@ struct NetworkedGame {
 	  Add new player to the players list
 	*/
 	void add(Peer_t id, const EndPoint &endPoint);
+	int getFreeSlot()const;
 
 	Player& getPlayerById(Peer_t id);
 

@@ -5,8 +5,9 @@
 using Peer_t = uint8_t;
 using Packet_t = uint8_t;
 using Command_t = uint8_t;
+using Command = bool;
 
-const int commandSizeInBytes = 2; /* bool(to tell us if command) + command itself */
+constexpr static unsigned int commandIdentifier = 49049;
 
 enum class eCommandToHost : Command_t {
 	ConnectRequest = 0,

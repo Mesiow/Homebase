@@ -2,8 +2,9 @@
 #include <iostream>
 
 Peer::Peer(Game *game, bool host)
-	:_game(game), _multiplayer(game, host)
+	:_game(game), _multiplayer(this, game, host)
 {
+	_host = host;
 	_id = 0;
 	initSocket();
 }

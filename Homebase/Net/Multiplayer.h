@@ -9,12 +9,14 @@ struct Host {
 	Peer_t id;
 };
 
+class Peer;
+
 /*
 	Class responsible for sending and receiving messages/data
 */
 class Multiplayer : public Net{
 public:
-	Multiplayer(Game *game, bool host);
+	Multiplayer(Peer *peer, Game *game, bool host);
 	~Multiplayer();
 	void render(sf::RenderTarget& target);
 	void update(Peer_t id, float dt);
@@ -29,19 +31,26 @@ public:
 	void sendPacket(sf::Packet& packet, const EndPoint& endPoint)override;
 	void sendBroadcastLAN(uint16_t portToSendBroadcast);
 
-	sf::Socket::Status bindSocket(EndPoint& endPoint);
+	sf::Socket::Status bindSocket(const EndPoint& endPoint);
 
 	void handleUserAdded(Peer_t id, const EndPoint &endPoint);
 	bool isHost()const;
+
+	Player& getPlayer(Peer_t id) { return _game.getPlayerById(id); }
 
 private:
 	void handleReceivedStateData(sf::Packet &packet);
 	void handleReceivedPeerState(sf::Packet& packet);
 	void handleReceivedBroadcast(const EndPoint& endPoint);
 	void handleBroadcastResponse(const EndPoint& endPoint);
+	void handleConnectionRequest(const EndPoint& endPoint);
+	void handleConnectionResponse(sf::Packet &packet, const EndPoint& endPoint);
+
+	void attemptConnect();
 	void setup();
 
 	NetworkedGame _game;
+	Peer* _peer = nullptr;
 	std::unique_ptr<Host> _host = nullptr;
 	std::unique_ptr<sf::Thread> _listeningThread = nullptr;
 	bool _listening = false;
