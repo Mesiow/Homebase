@@ -47,8 +47,8 @@ void Planet::loadTexture(const sf::Texture& texture)
 		//Setup planet
 		switch (_type) {
 			case Planet::Type::Planet: {
-				_sprite.setScale(4.0f, 4.0f); 
-				_outline.setRadius(_animation.frameWidth * 4.0f);
+				_sprite.setScale(5.0f, 5.0f); 
+				_outline.setRadius(_animation.frameWidth * 5.0f);
 			}break;
 			case Planet::Type::Moon: { 
 				_sprite.setScale(2.5f, 2.5f); 

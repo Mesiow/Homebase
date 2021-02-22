@@ -5,7 +5,6 @@
 
 Player::Player(Game *game)
 {
-	_windowRef = &game->getWindowHandle();
 	loadTexture(ResourceManager::getTexture("Defender"));
 	setup();
 }
@@ -13,13 +12,13 @@ Player::Player(Game *game)
 void Player::render(sf::RenderTarget& target)
 {
 	for (auto& b : _bullets) b.render(target);
-
 	Ship::render(target);
+
+	target.draw(_minimap.background);
 }
 
 void Player::update(sf::RenderWindow& window, float dt)
 {
-	//Set window view to the player's view
 	window.setView(_view);
 
 	updateDirection(window, dt);
@@ -29,8 +28,17 @@ void Player::update(sf::RenderWindow& window, float dt)
 	sprite.setPosition(position);
 
 	updateBullets(dt);
+	updateViews();
 
-	_view.setCenter(sprite.getPosition());
+	
+
+	/*sf::RectangleShape s;
+	s.setFillColor(sf::Color::Transparent);
+	s.setOutlineThickness(2.0f);
+	s.setOutlineColor(sf::Color::Green);
+	s.setSize(_minimap.getSize());
+	s.setPosition(_minimap.getCenter());
+	window.draw(s);*/
 }
 
 void Player::handleInput(float dt)
@@ -86,6 +94,17 @@ void Player::handleEvents(sf::Event& ev)
 	}
 }
 
+void Player::enableMinimapView(sf::RenderTarget &target)
+{
+	target.setView(_minimap.view);
+}
+
+void Player::enablePlayerView(sf::RenderTarget& target)
+{
+	//Set window view to the player's view
+	target.setView(_view);
+}
+
 void Player::shoot(float x, float y, float dx, float dy)
 {
 	Bullet bullet(x, y, dx, dy);
@@ -109,13 +128,16 @@ void Player::setup()
 	_bullets.clear();
 
 	_thrustSpeed = 200.0f;
+	_maxVelocity = 250.0f;
 	_zoomValue = 1.0f;
 	_rotationLocked = false;
 
 	sprite.setScale(sf::Vector2f(0.1f, 0.1f));
 	sprite.setOrigin(sf::Vector2f(sprite.getLocalBounds().width / 2.0f, sprite.getLocalBounds().height / 2.0f));
 
-	position = sf::Vector2f(200, 200);
+	float x = thor::random(-200, 200);
+	float y = thor::random(-200, 200);
+	position = sf::Vector2f(x, y);
 	sprite.setPosition(position);
 	sprite.setRotation(90);
 	
@@ -127,11 +149,22 @@ void Player::setup()
 	_view.setSize(sf::Vector2f(SCREEN_WIDTH, SCREEN_HEIGHT));
 	_view.setCenter(sf::Vector2f(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f));
 	_view.setViewport(sf::FloatRect(0, 0, 1, 1));
+
+	/*
+		Player's minimap viewport
+	*/
+	/*_minimap.view.setViewport(sf::FloatRect(0.75f, 0.0f, 0.25f, 0.25f));
+	_minimap.view.setSize(sf::Vector2f(8050, 4528));
+
+	_minimap.background.setFillColor(sf::Color(50, 50, 50, 70));
+	_minimap.background.setSize(sf::Vector2f(250, 160));
+	_minimap.background.setOrigin(sf::Vector2f(_minimap.background.getLocalBounds().width / 2.0f, _minimap.background.getLocalBounds().height / 2.0f));*/
 }
 
 void Player::updateVelocity(float dt)
 {
 	velocity += (direction * speed) * dt;
+	clampVelocity();
 }
 
 void Player::updateRotation(sf::RenderWindow& window, float dt)
@@ -171,6 +204,19 @@ void Player::updateDirection(sf::RenderWindow &window, float dt)
 	direction = normalize(direction);
 }
 
+void Player::updateViews()
+{
+	_view.setCenter(sprite.getPosition());
+
+	//_minimap.position = sf::Vector2f(
+	//	((_view.getCenter().x + _view.getSize().x / 3.0f) + _minimap.view.getSize().x / 2.0f),
+	//	((_view.getCenter().y - _view.getSize().y / 2.5f) - _minimap.view.getSize().y / 2.0f)
+	//);
+	
+	/*_minimap.background.setPosition((_view.getCenter().x + SCREEN_WIDTH / 2.0F) - _minimap.background.getSize().x,
+		(_view.getCenter().y - SCREEN_HEIGHT / 3.0F) - _minimap.background.getSize().y / 2.0f);*/
+}
+
 void Player::thrust(Moving thrust, float dt)
 {
 	//Get Cross product of direction vector 
@@ -187,4 +233,11 @@ void Player::thrust(Moving thrust, float dt)
 	if (thrust == Moving::Right) {
 		velocity -= (right * _thrustSpeed) * dt;
 	}
+	clampVelocity();
+}
+
+void Player::clampVelocity()
+{
+	velocity.x = std::clamp(velocity.x, -_maxVelocity, _maxVelocity);
+	velocity.y = std::clamp(velocity.y, -_maxVelocity, _maxVelocity);
 }
