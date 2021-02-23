@@ -8,9 +8,10 @@
 class Ship {
 public:
 	Ship();
-
 	void setPosition(const sf::Vector2f& position);
-	sf::Vector2f getPosition()const { return position; }
+	void setRotation(float rotation);
+	sf::Vector2f getPosition()const { return sprite.getPosition(); }
+	float getRotation()const { return sprite.getRotation(); }
 
 protected:
 	void render(sf::RenderTarget& target);

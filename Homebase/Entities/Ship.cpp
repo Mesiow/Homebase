@@ -16,6 +16,13 @@ Ship::Ship()
 void Ship::setPosition(const sf::Vector2f& position)
 {
 	this->position = position;
+	sprite.setPosition(position);
+}
+
+void Ship::setRotation(float rotation)
+{
+	this->angle = rotation;
+	sprite.setRotation(rotation);
 }
 
 void Ship::render(sf::RenderTarget& target)
