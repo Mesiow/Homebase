@@ -5,7 +5,6 @@
 using Peer_t = uint8_t;
 using Packet_t = uint8_t;
 using Command_t = uint8_t;
-using Command = bool;
 
 constexpr static unsigned int commandIdentifier = 49049;
 

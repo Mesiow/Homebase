@@ -27,7 +27,9 @@ public:
 	*/
 	void listen();
 
+	void run();
 	void receivePackets()override;
+	void sendState();
 	void sendPacket(sf::Packet& packet, const EndPoint& endPoint)override;
 	void sendBroadcastLAN(uint16_t portToSendBroadcast);
 
@@ -53,6 +55,8 @@ private:
 	Peer* _peer = nullptr;
 	std::unique_ptr<Host> _host = nullptr;
 	std::unique_ptr<sf::Thread> _listeningThread = nullptr;
+
+	sf::Clock _tickRate;
 	bool _listening = false;
 
 public:

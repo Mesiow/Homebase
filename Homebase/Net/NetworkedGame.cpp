@@ -62,12 +62,49 @@ void NetworkedGame::add(Peer_t id, const EndPoint &endPoint)
 	players[id] = std::make_unique<Player>(game);
 }
 
+void NetworkedGame::add(Peer_t id)
+{
+	connects[id] = true;
+	players[id] = std::make_unique<Player>(game);
+}
+
+bool NetworkedGame::isConnected(Peer_t id) const
+{
+	return connects[id];
+}
+
 int NetworkedGame::getFreeSlot() const
 {
 	for (int i = 0; i < MAX_CONNECTIONS; ++i) {
 		if (!connects[i]) return i;
 	}
 	return -1;
+}
+
+int NetworkedGame::peersConnected() const
+{
+	int count = 0;
+	for (int i = 0; i < MAX_CONNECTIONS; ++i) {
+		if (connects[i]) count++;
+	}
+	return count;
+}
+
+std::vector<int> NetworkedGame::getAlreadyConnectedSlots() const
+{
+	std::vector<int> connected_slots;
+	connected_slots.clear();
+	for (int i = 0; i < MAX_CONNECTIONS; ++i) {
+		if (connects[i]) {
+			connected_slots.push_back(i);
+		}
+	}
+	return connected_slots;
+}
+
+const EndPoint& NetworkedGame::getEndPoint(Peer_t id) const
+{
+	return *peers[id];
 }
 
 Player& NetworkedGame::getPlayerById(Peer_t id)

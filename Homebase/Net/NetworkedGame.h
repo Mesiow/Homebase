@@ -3,6 +3,7 @@
 #include "../Entities/Player.h"
 #include "../Entities/Planet.h"
 #include "Packets.h"
+#include <vector>
 #include <algorithm>
 #include <memory>
 #include <array>
@@ -23,8 +24,8 @@ class Game;
 	in the multiplayer environment
 */
 
-struct NetworkedGame {
-
+class NetworkedGame {
+public:
 	void render(sf::RenderTarget& target);
 	void update(Peer_t id, float dt);
 	void handleInput(Peer_t id, float dt);
@@ -40,8 +41,13 @@ struct NetworkedGame {
 	  Add new player to the players list
 	*/
 	void add(Peer_t id, const EndPoint &endPoint);
+	void add(Peer_t id);
+	bool isConnected(Peer_t id)const;
 	int getFreeSlot()const;
-
+	int peersConnected()const;
+	/* Returns id's of already connected players */
+	std::vector<int> getAlreadyConnectedSlots()const;
+	const EndPoint& getEndPoint(Peer_t id)const;
 	Player& getPlayerById(Peer_t id);
 
 	/*
