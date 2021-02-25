@@ -17,7 +17,10 @@ enum class eCommandToHost : Command_t {
 enum class eCommandToPeer : Command_t {
 	ConnectResponse = 0,
 	DisconnectResponse,
-	BroadcastResponse
+	BroadcastResponse,
+
+	NewPlayerConnected, //Host notifies when a new player has connected
+	AckPlayer, //Acknowledge already connected peer
 };
 
 enum class ePacket : Packet_t {

@@ -11,6 +11,8 @@ struct Host {
 
 class Peer;
 
+//TODO: Sent packet to all peers notifing them a new player has joined
+
 /*
 	Class responsible for sending and receiving messages/data
 */
@@ -32,6 +34,10 @@ public:
 	void sendState();
 	void sendPacket(sf::Packet& packet, const EndPoint& endPoint)override;
 	void sendBroadcastLAN(uint16_t portToSendBroadcast);
+	/*
+		Sends out a packet of the new connected player to all connected peers
+	*/
+	void notifyNewPlayerConnected(Peer_t newPlayerId, const EndPoint &endPoint);
 
 	sf::Socket::Status bindSocket(const EndPoint& endPoint);
 
@@ -44,6 +50,8 @@ private:
 	void handleReceivedStateData(sf::Packet &packet);
 	void handleReceivedPeerState(sf::Packet& packet);
 	void handleReceivedBroadcast(const EndPoint& endPoint);
+	void handleReceivedNewPlayerConnected(sf::Packet &packet);
+	void handleAckNewPlayer(sf::Packet& packet, const EndPoint &endPoint);
 	void handleBroadcastResponse(const EndPoint& endPoint);
 	void handleConnectionRequest(const EndPoint& endPoint);
 	void handleConnectionResponse(sf::Packet &packet, const EndPoint& endPoint);

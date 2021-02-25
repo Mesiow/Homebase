@@ -91,6 +91,8 @@ void Multiplayer::receivePackets()
 				switch (id) {
 					case eCommandToPeer::BroadcastResponse: handleBroadcastResponse({ remoteAddress, remotePort }); break;
 					case eCommandToPeer::ConnectResponse: handleConnectionResponse(packet, { remoteAddress, remotePort }); break;
+					case eCommandToPeer::NewPlayerConnected: handleReceivedNewPlayerConnected(packet); break;
+					case eCommandToPeer::AckPlayer: handleAckNewPlayer(packet, { remoteAddress, remotePort }); break;
 				}
 			}
 			else { //Check for regular state data packets
@@ -105,8 +107,8 @@ void Multiplayer::run()
 	_tickRate.restart();
 	while (_listening) {
 		receivePackets();
-		/* Send state every 10ms */
-		if (_tickRate.getElapsedTime().asSeconds() >= 0.10f) {
+		/* Send state every 20ms */
+		if (_tickRate.getElapsedTime().asSeconds() >= 0.20f) {
 			sendState();
 		}
 	}
@@ -119,29 +121,48 @@ void Multiplayer::sendState()
 	sf::Packet statePacket;
 	statePacket << ePacket::PeerState;
 
-	const Peer_t our_id = _peer->getID();
-	const auto& player = _game.getPlayerById(our_id);
-
-	const sf::Vector2f peerPosition = player.getPosition();
-	const float peerRotation = player.getRotation();
-
 	if (isHost()) {
+		const Peer_t our_id = _peer->getID();
+		const auto& player = _game.getPlayerById(our_id);
+
+		const sf::Vector2f peerPosition = player.getPosition();
+		const float peerRotation = player.getRotation();
+
 		statePacket << our_id << peerPosition.x << peerPosition.y << peerRotation;
+
+		//Have host send data about its' state to all connected peers
 		for (size_t i = 0; i < MAX_CONNECTIONS; ++i) {
 			if (_game.isConnected(i)) {
 				const EndPoint& ep = _game.getEndPoint(i);
 
-				if (ep.port != _game.getEndPoint(our_id).port) { /* Make sure data will not being sent to ourself */
+				if (ep.port != _game.getEndPoint(our_id).port) { /* Make sure data will not being sent to ourself as the host */
 					sendPacket(statePacket, ep);
 				}
 			}
 		}
 	}
 	else {
-		//Send data to the host
-		statePacket << our_id << peerPosition.x << peerPosition.y << peerRotation;
-		if (_game.isConnected(_host->id)) {
-			sendPacket(statePacket, { _host->address, _host->port });
+		const Peer_t our_id = _peer->getID();
+		if (_game.isConnected(our_id)) {
+			const auto& player = _game.getPlayerById(our_id);
+
+			const sf::Vector2f peerPosition = player.getPosition();
+			const float peerRotation = player.getRotation();
+
+		
+			statePacket << our_id << peerPosition.x << peerPosition.y << peerRotation;
+			
+			//Send data Peer to peer
+			for (size_t i = 0; i < MAX_CONNECTIONS; ++i) {
+				if (_game.isConnected(i)) {
+					const EndPoint& ep = _game.getEndPoint(i);
+
+					if (ep.port != _game.getEndPoint(our_id).port) { /* Make sure data will not being sent to ourself as the peer */
+						sendPacket(statePacket, ep);
+					}
+				}
+			}
+			
 		}
 	}
 }
@@ -156,6 +177,27 @@ void Multiplayer::sendBroadcastLAN(uint16_t portToSendBroadcast)
 	sf::Packet broadcastPacket;
 	broadcastPacket << commandIdentifier << eCommandToHost::Broadcast;
 	socket.send(broadcastPacket, sf::IpAddress::Broadcast, portToSendBroadcast);
+}
+
+void Multiplayer::notifyNewPlayerConnected(Peer_t newPlayerId, const EndPoint& endPoint)
+{
+	const auto& connected = _game.getAlreadyConnectedSlots();
+	if (connected.size() > 2) { /* If greater than 2 then a third player has joined so notify the other peer */
+		sf::Packet newPlayerPacket;
+		newPlayerPacket << commandIdentifier << eCommandToPeer::NewPlayerConnected << newPlayerId << endPoint.address.toInteger() << endPoint.port;
+
+		for (size_t i = 0; i < connected.size(); ++i) {
+			if (_game.isConnected(connected[i])) {
+				// We only want to send this data about the new player to the other peer who is connected,
+				// Not the host or ourselves
+				if (connected[i] != _host->id && connected[i] != newPlayerId) {
+					const EndPoint& ep = _game.getEndPoint(connected[i]);
+					std::cout << "Slot " << connected[i] << " is connected at " << ep.address.toString() << ":" << ep.port << std::endl;
+					sendPacket(newPlayerPacket, ep);
+				}
+			}	
+		}
+	}
 }
 
 sf::Socket::Status Multiplayer::bindSocket(const EndPoint& endPoint)
@@ -212,6 +254,37 @@ void Multiplayer::handleReceivedBroadcast(const EndPoint& endPoint)
 	sendPacket(broadcastResponse, endPoint);
 }
 
+void Multiplayer::handleReceivedNewPlayerConnected(sf::Packet& packet)
+{
+	Peer_t newPlayerId;
+	if (packet >> newPlayerId) {
+		std::cout << "Received new player connected slot #" << (int)newPlayerId << std::endl;
+		uint32_t address;
+		uint16_t port;
+		packet >> address >> port;
+
+		EndPoint ep;
+		ep.address = sf::IpAddress(address);
+		ep.port = port;
+
+		_game.add(newPlayerId, ep);
+
+		sf::Packet p;
+		p << commandIdentifier << eCommandToPeer::AckPlayer << _peer->getID();
+		std::cout << "Sending ack from peer " << (int)_peer->getID() << " to " << ep.address.toString() << ":" << ep.port << std::endl;
+		sendPacket(p, ep);
+	}
+}
+
+void Multiplayer::handleAckNewPlayer(sf::Packet& packet, const EndPoint& endPoint)
+{
+	Peer_t id;
+	if (packet >> id) {
+		std::cout << "Acknowledge peer " << (int)id << std::endl;
+		_game.add(id, endPoint);
+	}
+}
+
 void Multiplayer::handleBroadcastResponse(const EndPoint& endPoint)
 {
 	_host = std::make_unique<Host>();
@@ -233,24 +306,18 @@ void Multiplayer::handleConnectionRequest(const EndPoint& endPoint)
 	if (slot) {
 		/* Add peer to the networked game for the host */
 		_game.add(slot, endPoint);
+
+		//Notify already connected peers of new player
+		notifyNewPlayerConnected(slot, endPoint);
 		
 		/* Send the hosts' id along with the peers new slot id */
 		sf::Packet connectResponsePacket;
 
 		const auto &connected = _game.getAlreadyConnectedSlots();
-		connectResponsePacket << commandIdentifier << eCommandToPeer::ConnectResponse << _host->id << connected.size();
+		std::cout << "Host id: " <<(int)_host->id << std::endl;
+		connectResponsePacket << commandIdentifier << eCommandToPeer::ConnectResponse << _host->id << (Peer_t)slot;
 		std::cout << "Connected size: " << connected.size() << std::endl;
 
-		/* If we aren't the first peer to connect to the host */
-		if (_game.peersConnected() > 2) {
-			/* Add all id's of already connected clients */
-			for (size_t i = 0; i < connected.size(); ++i) {
-				connectResponsePacket << connected[i];
-			}
-		}
-
-		/* Append the new id for the new connecting client */
-		connectResponsePacket << (Peer_t)slot;
 		sendPacket(connectResponsePacket, endPoint);
 	}
 	else { //No slots available
@@ -263,37 +330,15 @@ void Multiplayer::handleConnectionResponse(sf::Packet &packet, const EndPoint& e
 	if (_host->address == endPoint.address && _host->port == endPoint.port) {
 		Peer_t host_id;
 		Peer_t slot_id;
-		size_t connectedSize;
-		if (packet >> host_id >> connectedSize) {
-			/* 
-				Read already connected client id's if any.
-				If size is 2, then only the host is connected and 
-				that the host added us to the list and that we are the next user to connect
-			*/
-			if (connectedSize <= 2) {
-				packet >> slot_id;
-				_peer->setID(slot_id);
-				std::cout << "Connection successful\n";
-				std::cout << "Slot id: " << (int)slot_id << std::endl;
+		if (packet >> host_id >> slot_id) {
+			_peer->setID(slot_id);
+			std::cout << "Connection successful\n";
+			std::cout << "Slot id: " << (int)slot_id << std::endl;
 
-				/* Add the host and us to the networked game */
-				_host->id = host_id;
-				_game.add(host_id, { _host->address, _host->port });
-				_game.add(_peer->getID(), { this->address, this->port });
-			}
-			else if(connectedSize > 2){
-				//TODO: Allow more than two players
-
-				/*
-				_game.add(host_id, { _host->address, _host->port });
-				for (size_t i = 0; i < connectedSize; ++i) {
-					Peer_t id;
-					packet >> id;
-					_game.add(i);
-				}
-				packet >> slot_id;
-				_game.add(_peer->getID(), { this->address, this->port });*/
-			}
+			/* Add the host and us to the networked game */
+			_host->id = host_id;
+			_game.add(host_id, { _host->address, _host->port });
+			_game.add(_peer->getID(), { this->address, this->port });
 		}
 	}
 }
