@@ -11,7 +11,7 @@ struct Host {
 
 class Peer;
 
-//TODO: Sent packet to all peers notifing them a new player has joined
+//TODO: Implement peer interpolation for smooth movement
 
 /*
 	Class responsible for sending and receiving messages/data

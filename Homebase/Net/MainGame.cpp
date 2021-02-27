@@ -47,6 +47,12 @@ void MainGame::handleEvents(sf::Event& ev)
 
 void MainGame::loadResources()
 {
+	//Load all player textures
+	ResourceManager::loadTexture("Player1", "Res/Player1.png");
+	ResourceManager::loadTexture("Player2", "Res/Player2.png");
+	ResourceManager::loadTexture("Player3", "Res/Player3.png");
+	ResourceManager::loadTexture("Player4", "Res/Player4.png");
+
 	ResourceManager::loadTexture("Defender", "Res/PlayerShip.png");
 	ResourceManager::loadTexture("Moon1", "Res/Planets/moon_sheet.png");
 	ResourceManager::loadTexture("Terran_Cloudy", "Res/Planets/Terran_Sheet.png");

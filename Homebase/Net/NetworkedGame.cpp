@@ -59,13 +59,14 @@ void NetworkedGame::add(Peer_t id, const EndPoint &endPoint)
 {
 	connects[id] = true;
 	peers[id] = std::make_unique<EndPoint>(endPoint);
-	players[id] = std::make_unique<Player>(game);
-}
 
-void NetworkedGame::add(Peer_t id)
-{
-	connects[id] = true;
-	players[id] = std::make_unique<Player>(game);
+	switch (id) {
+		case 0: players[id] = std::make_unique<Player>(game, ResourceManager::getTexture("Player1")); break; //Host 
+		case 1: players[id] = std::make_unique<Player>(game, ResourceManager::getTexture("Player2")); break;
+		case 2: players[id] = std::make_unique<Player>(game, ResourceManager::getTexture("Player3")); break;
+		case 3: players[id] = std::make_unique<Player>(game, ResourceManager::getTexture("Player4")); break;
+	}
+	
 }
 
 bool NetworkedGame::isConnected(Peer_t id) const

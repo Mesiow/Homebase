@@ -110,6 +110,7 @@ void Multiplayer::run()
 		/* Send state every 20ms */
 		if (_tickRate.getElapsedTime().asSeconds() >= 0.20f) {
 			sendState();
+			_tickRate.restart();
 		}
 	}
 }

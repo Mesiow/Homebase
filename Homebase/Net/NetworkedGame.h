@@ -10,6 +10,8 @@
 
 #define MAX_CONNECTIONS 4
 
+
+
 struct PlayerData {
 	float x, y;
 	float dx, dy;
@@ -20,7 +22,7 @@ struct PlayerData {
 class Game;
 
 /*
-	Struct that renders all networked entities contains functions used
+	Class that renders all networked entities contains functions used
 	in the multiplayer environment
 */
 
@@ -41,7 +43,6 @@ public:
 	  Add new player to the players list
 	*/
 	void add(Peer_t id, const EndPoint &endPoint);
-	void add(Peer_t id);
 	bool isConnected(Peer_t id)const;
 	int getFreeSlot()const;
 	int peersConnected()const;
