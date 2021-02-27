@@ -3,9 +3,9 @@
 #include <Game/Game.h>
 #include <iostream>
 
-Player::Player(Game *game)
+Player::Player(Game *game, const sf::Texture &texture)
 {
-	loadTexture(ResourceManager::getTexture("Defender"));
+	loadTexture(texture);
 	setup();
 }
 
@@ -29,16 +29,6 @@ void Player::update(sf::RenderWindow& window, float dt)
 
 	updateBullets(dt);
 	updateViews();
-
-	
-
-	/*sf::RectangleShape s;
-	s.setFillColor(sf::Color::Transparent);
-	s.setOutlineThickness(2.0f);
-	s.setOutlineColor(sf::Color::Green);
-	s.setSize(_minimap.getSize());
-	s.setPosition(_minimap.getCenter());
-	window.draw(s);*/
 }
 
 void Player::handleInput(float dt)

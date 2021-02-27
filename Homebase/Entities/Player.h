@@ -18,7 +18,7 @@ enum class Moving {
 
 class Player : public Ship {
 public:
-	Player(Game *game);
+	Player(Game *game, const sf::Texture &texture);
 	void render(sf::RenderTarget& target);
 	void update(sf::RenderWindow& window, float dt);
 	void handleInput(float dt);
